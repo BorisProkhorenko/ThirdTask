@@ -2,25 +2,32 @@ package com.epam.task.third;
 
 import com.epam.task.third.data.DataException;
 import com.epam.task.third.data.DataReader;
+import com.epam.task.third.entity.Point;
 import com.epam.task.third.entity.Tetrahedron;
-import com.epam.task.third.parsing.TetrahedronParser;
+import com.epam.task.third.parsing.TetrahedronPointsParser;
+import com.epam.task.third.validation.InputLineValidator;
+import com.epam.task.third.validation.RegularTetrahedronValidator;
 import com.epam.task.third.validation.Validator;
+
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class RegularTetrahedronListCreator {
 
-   private DataReader reader;
-   private Validator<String> lineValidator;
-   private Validator<Tetrahedron> regularityValidator;
-   private TetrahedronParser parser;
+    private DataReader reader;
+    private InputLineValidator lineValidator;
+    private TetrahedronPointsParser parser;
+    private static final Logger LOGGER = LogManager.getLogger();
 
-    public RegularTetrahedronListCreator(DataReader reader, Validator<String> lineValidator,
-                                         Validator<Tetrahedron> regularityValidator, TetrahedronParser parser) {
+
+    public RegularTetrahedronListCreator(DataReader reader, InputLineValidator lineValidator,
+                                         TetrahedronPointsParser parser) {
         this.reader = reader;
         this.lineValidator = lineValidator;
-        this.regularityValidator = regularityValidator;
         this.parser = parser;
     }
 
@@ -28,12 +35,24 @@ public class RegularTetrahedronListCreator {
         List<Tetrahedron> tetrahedronList = new ArrayList<>();
         try {
             List<String> data = reader.readData(filePath);
+        LOGGER.log(Level.DEBUG,"Reading from resources - success");
+
             for (String line : data) {
-                if (lineValidator.validate(line)) {
-                    TetrahedronParser parser = new TetrahedronParser();
-                    Tetrahedron tetrahedron = parser.parse(line);
-                    if (regularityValidator.validate(tetrahedron)) {
-                        tetrahedronList.add(tetrahedron);
+
+                if (lineValidator.validate()) {
+                    TetrahedronPointsParser parser = new TetrahedronPointsParser();
+                    List<Point> tetrahedronData = parser.parse(line);
+                    Point a = tetrahedronData.get(0);
+                    Point b = tetrahedronData.get(1);
+                    Point c = tetrahedronData.get(2);
+                    Point d = tetrahedronData.get(3);
+
+                    RegularTetrahedronValidator regularityValidator =
+                            new RegularTetrahedronValidator(a, b, c, d);
+                    LOGGER.log(Level.DEBUG,"Parsing - success");
+                    if (regularityValidator.validate()) {
+                        tetrahedronList.add(new Tetrahedron(a, b, c, d));
+                        LOGGER.log(Level.DEBUG,"Tetrahedron is regular");
                     }
                 }
             }
@@ -53,27 +72,20 @@ public class RegularTetrahedronListCreator {
         this.reader = reader;
     }
 
-    public Validator<String> getLineValidator() {
+    public Validator getLineValidator() {
         return lineValidator;
     }
 
-    public void setLineValidator(Validator<String> lineValidator) {
+    public void setLineValidator(InputLineValidator lineValidator) {
         this.lineValidator = lineValidator;
     }
 
-    public Validator<Tetrahedron> getRegularityValidator() {
-        return regularityValidator;
-    }
 
-    public void setRegularityValidator(Validator<Tetrahedron> regularityValidator) {
-        this.regularityValidator = regularityValidator;
-    }
-
-    public TetrahedronParser getParser() {
+    public TetrahedronPointsParser getParser() {
         return parser;
     }
 
-    public void setParser(TetrahedronParser parser) {
+    public void setParser(TetrahedronPointsParser parser) {
         this.parser = parser;
     }
 
@@ -82,7 +94,6 @@ public class RegularTetrahedronListCreator {
         return "RegularTetrahedronListCreator{" +
                 "reader=" + reader +
                 ", lineValidator=" + lineValidator +
-                ", regularityValidator=" + regularityValidator +
                 ", parser=" + parser +
                 '}';
     }

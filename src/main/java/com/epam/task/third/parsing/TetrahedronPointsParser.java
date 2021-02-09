@@ -2,13 +2,15 @@ package com.epam.task.third.parsing;
 
 import com.epam.task.third.data.DataException;
 import com.epam.task.third.entity.Point;
-import com.epam.task.third.entity.Tetrahedron;
 
-public class TetrahedronParser {
+import java.util.ArrayList;
+import java.util.List;
+
+public class TetrahedronPointsParser {
 
     private static final String DELIMITER = ",";
 
-    public Tetrahedron parse(String line) throws DataException {
+    public List<Point> parse(String line) throws DataException {
         line = line.trim();
         String[] stringDataArray = line.split(DELIMITER);
         try {
@@ -16,7 +18,12 @@ public class TetrahedronParser {
             Point b = parsePoint(stringDataArray[1]);
             Point c = parsePoint(stringDataArray[2]);
             Point d = parsePoint(stringDataArray[3]);
-            return new Tetrahedron(a, b, c, d);
+            List<Point> pointList= new ArrayList<>();
+            pointList.add(a);
+            pointList.add(b);
+            pointList.add(c);
+            pointList.add(d);
+            return pointList;
         } catch (Exception e) {
             throw new DataException("Incorrect input", e);
         }

@@ -10,8 +10,8 @@ import java.util.List;
 public class DataReaderTest {
 
     private final static String TEST_FILE_PATH = "./src/test/resources/input.txt";
-    private final static String INVALID_FILE_PATH = "./src/test/resources/invalid.txt";
-    private final static String[] TEST_DATA = {"2 4 -1, 5 4 3, 7 -8 54, 7 7 7","5345 fbf p.eg","pgokngjl;kjgn"};
+    private final static String INVALID_FILE_PATH = "./src/test/resources/invalid_input.txt";
+    private final static String[] TEST_DATA = {"2 4 -1, 5 4 3, 7 -8 54, 7 7 7", "5345 fbf p.eg", "pgokngjl;kjgn"};
     private DataReader reader = new DataReader();
 
     @Test

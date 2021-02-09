@@ -1,24 +1,19 @@
 package com.epam.task.third.entity;
 
-import com.epam.task.third.logic.RegularTetrahedronLogic;
-
 import java.util.Objects;
 
 public class Tetrahedron {
 
-    private final Point a;
-    private final Point b;
-    private final Point c;
-    private final Point d;
-    private final Double edgeLength;
+    private Point a;
+    private Point b;
+    private Point c;
+    private Point d;
 
     public Tetrahedron(Point a, Point b, Point c, Point d) {
         this.a = a;
         this.b = b;
         this.c = c;
         this.d = d;
-        RegularTetrahedronLogic logic = new RegularTetrahedronLogic();
-        edgeLength = logic.calculateDistanceBetweenTwoPoints(a, b);
     }
 
     public Point getA() {
@@ -37,10 +32,21 @@ public class Tetrahedron {
         return d;
     }
 
-    public Double getEdgeLength() {
-        return edgeLength;
+    public void setA(Point a) {
+        this.a = a;
     }
 
+    public void setB(Point b) {
+        this.b = b;
+    }
+
+    public void setC(Point c) {
+        this.c = c;
+    }
+
+    public void setD(Point d) {
+        this.d = d;
+    }
 
 
     @Override
@@ -55,13 +61,12 @@ public class Tetrahedron {
         return Objects.equals(a, that.a) &&
                 Objects.equals(b, that.b) &&
                 Objects.equals(c, that.c) &&
-                Objects.equals(d, that.d) &&
-                Objects.equals(edgeLength, that.edgeLength);
+                Objects.equals(d, that.d);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(a, b, c, d, edgeLength);
+        return Objects.hash(a, b, c, d);
     }
 
     @Override
@@ -71,7 +76,6 @@ public class Tetrahedron {
                 ", b=" + b +
                 ", c=" + c +
                 ", d=" + d +
-                ", edgeLength=" + edgeLength +
                 '}';
     }
 }

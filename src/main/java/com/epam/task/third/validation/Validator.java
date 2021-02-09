@@ -1,6 +1,6 @@
 package com.epam.task.third.validation;
 
-public interface Validator<T> {
+public interface Validator {
     
-    boolean validate(T data);
+    boolean validate();
 }

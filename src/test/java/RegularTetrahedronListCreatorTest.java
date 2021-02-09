@@ -1,8 +1,9 @@
 import com.epam.task.third.RegularTetrahedronListCreator;
 import com.epam.task.third.data.DataException;
 import com.epam.task.third.data.DataReader;
+import com.epam.task.third.entity.Point;
 import com.epam.task.third.entity.Tetrahedron;
-import com.epam.task.third.parsing.TetrahedronParser;
+import com.epam.task.third.parsing.TetrahedronPointsParser;
 import com.epam.task.third.validation.InputLineValidator;
 import com.epam.task.third.validation.RegularTetrahedronValidator;
 import com.epam.task.third.validation.Validator;
@@ -10,6 +11,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,24 +30,27 @@ public class RegularTetrahedronListCreatorTest {
         DataReader mockReader = Mockito.mock(DataReader.class);
         when(mockReader.readData(anyString())).thenReturn(TEST_DATA_LIST);
 
-        Validator<String> mockLineValidator = Mockito.mock(InputLineValidator.class);
-        when(mockLineValidator.validate(anyString())).thenReturn(true);
+        InputLineValidator mockLineValidator = Mockito.mock(InputLineValidator.class);
+        when(mockLineValidator.validate()).thenReturn(true);
 
-        Tetrahedron mockTetrahedron = Mockito.mock(Tetrahedron.class);
+        ArrayList<Point> mockPoints = Mockito.mock(ArrayList.class);
 
-        TetrahedronParser mockTetrahedronParser = Mockito.mock(TetrahedronParser.class);
-        when(mockTetrahedronParser.parse(anyString())).thenReturn(mockTetrahedron);
+        TetrahedronPointsParser mockTetrahedronPointsParser = Mockito.mock(TetrahedronPointsParser.class);
+        when(mockTetrahedronPointsParser.parse(anyString())).thenReturn(mockPoints);
 
-        Validator<Tetrahedron> mockRegularityValidator = Mockito.mock(RegularTetrahedronValidator.class);
-        when(mockRegularityValidator.validate(mockTetrahedron)).thenReturn(true);
+        Validator mockRegularityValidator = Mockito.mock(RegularTetrahedronValidator.class);
+        when(mockRegularityValidator.validate()).thenReturn(true);
 
         RegularTetrahedronListCreator creator = new RegularTetrahedronListCreator(mockReader,
-                mockLineValidator, mockRegularityValidator, mockTetrahedronParser);
-        //when
+                mockLineValidator, mockTetrahedronPointsParser);
+        int expectedListSize = 1;
         List<Tetrahedron> tetrahedronList = creator.createList(TEST_FILE_PATH);
+        //when
+        int actualListSize = tetrahedronList.size();
 
         //then
-        Assert.assertNotNull(tetrahedronList);
+        //  Assert.assertNotNull(tetrahedronList);
+        Assert.assertEquals(expectedListSize, actualListSize);
 
     }
 }
