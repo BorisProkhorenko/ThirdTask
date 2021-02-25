@@ -2,36 +2,34 @@ package com.epam.task.third.entity;
 
 import com.epam.task.third.observers.Observable;
 import com.epam.task.third.observers.Observer;
-import com.epam.task.third.validation.RegularTetrahedronValidator;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import java.util.List;
+
 
 public class TetrahedronObservable extends Tetrahedron implements Observable {
 
-    private Observer observer;
-    private RegularTetrahedronValidator validator;
-    private static final Logger LOGGER = LogManager.getLogger();
+    private List<Observer> observers;
+    private int id;
 
-    public TetrahedronObservable(Point a, Point b, Point c, Point d) {
+    public TetrahedronObservable(Point a, Point b, Point c, Point d, int id) {
         super(a, b, c, d);
-        validator = new RegularTetrahedronValidator(a, b, c, d);
+        this.id = id;
     }
 
     @Override
     public void addObserver(Observer observer) {
-        this.observer = observer;
+        observers.add(observer);
         observer.update(this);
     }
 
     @Override
     public void removeObserver(Observer observer) {
-        this.observer = null;
+        observers.remove(observer);
     }
 
     @Override
-    public void notifyObserver() {
-        if (observer != null) {
+    public void notifyObservers() {
+        for (Observer observer : observers) {
             observer.update(this);
         }
     }
@@ -39,36 +37,33 @@ public class TetrahedronObservable extends Tetrahedron implements Observable {
     @Override
     public void setA(Point a) {
         super.setA(a);
-        checkIsTetrahedronRegularAndNotifyObserverIfTrue();
+        notifyObservers();
     }
 
     @Override
     public void setB(Point b) {
         super.setB(b);
-        checkIsTetrahedronRegularAndNotifyObserverIfTrue();
+        notifyObservers();
     }
 
     @Override
     public void setC(Point c) {
         super.setC(c);
-        checkIsTetrahedronRegularAndNotifyObserverIfTrue();
+        notifyObservers();
 
     }
 
     @Override
     public void setD(Point d) {
         super.setD(d);
-        checkIsTetrahedronRegularAndNotifyObserverIfTrue();
+        notifyObservers();
     }
 
-    private void checkIsTetrahedronRegularAndNotifyObserverIfTrue() {
-        if (validator.validate()) {
-            notifyObserver();
-            LOGGER.log(Level.INFO, "Tetrahedron is regular so parameters were updated");
-        } else {
-            LOGGER.log(Level.INFO, "Tetrahedron is not regular so parameters were not updated");
-        }
+    public int getId() {
+        return id;
     }
 
-
+    public void setId(int id) {
+        this.id = id;
+    }
 }

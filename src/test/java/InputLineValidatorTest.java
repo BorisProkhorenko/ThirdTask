@@ -1,5 +1,4 @@
 import com.epam.task.third.validation.InputLineValidator;
-import com.epam.task.third.validation.Validator;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -12,9 +11,9 @@ public class InputLineValidatorTest {
     @Test
     public void testValidateWhenCorrectLineApplied() {
         //given
-        Validator validator = new InputLineValidator(CORRECT_LINE);
+        InputLineValidator validator = new InputLineValidator();
         //when
-        boolean actual = validator.validate();
+        boolean actual = validator.validate(CORRECT_LINE);
         //then
         Assert.assertTrue(actual);
 
@@ -24,9 +23,9 @@ public class InputLineValidatorTest {
     public void testValidateWhenIncorrectLineApplied() {
 
         //given
-        Validator validator = new InputLineValidator(INCORRECT_LINE);
+        InputLineValidator validator = new InputLineValidator();
         //when
-        boolean actual = validator.validate();
+        boolean actual = validator.validate(INCORRECT_LINE);
         //then
         Assert.assertFalse(actual);
 

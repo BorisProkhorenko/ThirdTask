@@ -35,7 +35,7 @@ public class TetrahedronPointsParserTest {
 
     }
 
-    @Test(expected = DataException.class)
+    @Test(expected = Exception.class)
     public void testParseWhenIncorrectDataApplied() throws DataException {
 
         //when

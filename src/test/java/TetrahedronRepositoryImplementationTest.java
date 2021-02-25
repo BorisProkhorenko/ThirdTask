@@ -1,12 +1,10 @@
 import com.epam.task.third.entity.Point;
 import com.epam.task.third.entity.Tetrahedron;
 import com.epam.task.third.repo.TetrahedronRepositoryImplementation;
-import com.epam.task.third.validation.TetrahedronIsNotRegularException;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.util.Map;
 
 public class TetrahedronRepositoryImplementationTest {
     private static final TetrahedronRepositoryImplementation REPO = new TetrahedronRepositoryImplementation();
@@ -30,57 +28,38 @@ public class TetrahedronRepositoryImplementationTest {
     }
 
     @Test
-    public void testAddTetrahedronWhenRegularTetrahedronApplied() throws TetrahedronIsNotRegularException {
+    public void testAddTetrahedronWhenRegularTetrahedronApplied()  {
         //given
         repo = new TetrahedronRepositoryImplementation();
-        Map<Integer, Tetrahedron> repoMap = repo.getRepoMap();
         //when
         repo.addTetrahedron(regularTetrahedron);
         //than
-        Assert.assertEquals(repoMap.get(0), regularTetrahedron);
+        Assert.assertEquals(repo.getTetrahedronById(0), regularTetrahedron);
     }
 
-    @Test(expected = TetrahedronIsNotRegularException.class)
-    public void testAddTetrahedronWhenIrregularTetrahedronApplied() throws TetrahedronIsNotRegularException {
-        //given
-        repo = new TetrahedronRepositoryImplementation();
-        //when
-        repo.addTetrahedron(irregularTetrahedron);
 
-    }
 
     @Test
-    public void testRemoveTetrahedron() throws TetrahedronIsNotRegularException {
+    public void testRemoveTetrahedron() {
         //given
         repo = new TetrahedronRepositoryImplementation();
-        Map<Integer, Tetrahedron> repoMap = repo.getRepoMap();
         repo.addTetrahedron(regularTetrahedron);
         //when
         repo.removeTetrahedron(0);
         //than
-        Assert.assertFalse(repoMap.containsValue(regularTetrahedron));
+        Assert.assertNull(repo.getTetrahedronById(0));
     }
 
     @Test
-    public void testReplaceTetrahedronWhenRegularTetrahedronApplied() throws TetrahedronIsNotRegularException {
+    public void testReplaceTetrahedronWhenRegularTetrahedronApplied(){
         //given
         repo = new TetrahedronRepositoryImplementation();
-        Map<Integer, Tetrahedron> repoMap = repo.getRepoMap();
         repo.addTetrahedron(regularTetrahedron);
         //when
         repo.replaceTetrahedron(0, regularTetrahedronForReplacement);
         //than
-        Assert.assertEquals(repoMap.get(0), regularTetrahedronForReplacement);
+        Assert.assertEquals(repo.getTetrahedronById(0), regularTetrahedronForReplacement);
     }
 
-    @Test(expected = TetrahedronIsNotRegularException.class)
-    public void testReplaceTetrahedronWhenIrregularTetrahedronApplied() throws TetrahedronIsNotRegularException {
-        //given
-        repo = new TetrahedronRepositoryImplementation();
-        repo.addTetrahedron(regularTetrahedron);
-        //when
-        repo.replaceTetrahedron(0, irregularTetrahedron);
-
-    }
 
 }

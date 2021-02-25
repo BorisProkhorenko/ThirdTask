@@ -1,16 +1,14 @@
 package com.epam.task.third.logic;
 
-import com.epam.task.third.data.DataException;
 import com.epam.task.third.entity.Point;
 import com.epam.task.third.entity.Tetrahedron;
 import com.epam.task.third.enums.Plane;
-import com.epam.task.third.validation.RegularTetrahedronValidator;
-import com.epam.task.third.validation.TetrahedronIsNotRegularException;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -32,43 +30,32 @@ public class TetrahedronCalculator {
                 Math.pow(zSecondPoint - zFirstPoint, 2));
     }
 
-    public double calculateRegularTetrahedronsEdgeLength(Tetrahedron tetrahedron)
-            throws TetrahedronIsNotRegularException {
-        if (isRegular(tetrahedron)) {
-            Point a = tetrahedron.getA();
-            Point b = tetrahedron.getB();
-            return calculateDistanceBetweenTwoPoints(a, b);
-        } else {
-            throw new TetrahedronIsNotRegularException("Not regular");
-        }
+    public double calculateRegularTetrahedronsEdgeLength(Tetrahedron tetrahedron) {
+        Point pointA = tetrahedron.getA();
+        Point pointB = tetrahedron.getB();
+        return calculateDistanceBetweenTwoPoints(pointA, pointB);
+
     }
 
+    public double calculateTetrahedronArea(Tetrahedron tetrahedron) {
 
-    public double calculateTetrahedronArea(Tetrahedron tetrahedron) throws TetrahedronIsNotRegularException {
-        if (isRegular(tetrahedron)) {
-            double edgeLength = calculateRegularTetrahedronsEdgeLength(tetrahedron);
-            return Math.sqrt(3) * Math.pow(edgeLength, 2);
-        } else {
-            throw new TetrahedronIsNotRegularException("Not regular");
-        }
+        double edgeLength = calculateRegularTetrahedronsEdgeLength(tetrahedron);
+        return Math.sqrt(3) * Math.pow(edgeLength, 2);
+
     }
 
-    public double calculateTetrahedronVolume(Tetrahedron tetrahedron) throws TetrahedronIsNotRegularException {
-        if (isRegular(tetrahedron)) {
-            double edgeLength = calculateRegularTetrahedronsEdgeLength(tetrahedron);
-            return (Math.pow(edgeLength, 3) * Math.sqrt(2)) / 12;
-        } else {
-            throw new TetrahedronIsNotRegularException("Not regular");
-        }
+    public double calculateTetrahedronVolume(Tetrahedron tetrahedron) {
+        double edgeLength = calculateRegularTetrahedronsEdgeLength(tetrahedron);
+        return (Math.pow(edgeLength, 3) * Math.sqrt(2)) / 12;
     }
 
     public boolean isTetrahedronsFoundationIsOnOneOfCoordinatePlanes(Tetrahedron tetrahedron) {
         LOGGER.log(Level.WARN, "You should check Tetrahedron for correctness before using this method");
-        return isTetrahedronsFoundationIsOnXOYPlane(tetrahedron) || isTetrahedronsFoundationIsOnXOZPlane(tetrahedron) ||
-                isTetrahedronsFoundationIsOnYOZPlane(tetrahedron);
+        return isTetrahedronsFoundationIsOnXoyPlane(tetrahedron) || isTetrahedronsFoundationIsOnXozPlane(tetrahedron) ||
+                isTetrahedronsFoundationIsOnYozPlane(tetrahedron);
     }
 
-    public boolean isTetrahedronsFoundationIsOnYOZPlane(Tetrahedron tetrahedron) {
+    public boolean isTetrahedronsFoundationIsOnYozPlane(Tetrahedron tetrahedron) {
         LOGGER.log(Level.WARN, "You should check Tetrahedron for correctness before using this method");
         Point a = tetrahedron.getA();
         Point b = tetrahedron.getB();
@@ -84,7 +71,7 @@ public class TetrahedronCalculator {
         return false;
     }
 
-    public boolean isTetrahedronsFoundationIsOnXOZPlane(Tetrahedron tetrahedron) {
+    public boolean isTetrahedronsFoundationIsOnXozPlane(Tetrahedron tetrahedron) {
         LOGGER.log(Level.WARN, "You should check Tetrahedron for correctness before using this method");
         Point a = tetrahedron.getA();
         Point b = tetrahedron.getB();
@@ -100,7 +87,7 @@ public class TetrahedronCalculator {
         return false;
     }
 
-    public boolean isTetrahedronsFoundationIsOnXOYPlane(Tetrahedron tetrahedron) {
+    public boolean isTetrahedronsFoundationIsOnXoyPlane(Tetrahedron tetrahedron) {
         LOGGER.log(Level.WARN, "You should check Tetrahedron for correctness before using this method");
         Point a = tetrahedron.getA();
         Point b = tetrahedron.getB();
@@ -116,22 +103,17 @@ public class TetrahedronCalculator {
         return false;
     }
 
-    public double calculateSectionalVolumeRatio(Tetrahedron tetrahedron, Plane plane)
-            throws TetrahedronIsNotRegularException {
-        if (isRegular(tetrahedron)) {
-            try {
-                Point lonelyPoint = findLonelyPoint(tetrahedron, plane);
-                LOGGER.log(Level.DEBUG, "Search of point which is cut off by plane - success");
-                double volumeOfTetrahedron = calculateTetrahedronVolume(tetrahedron);
-                double volumeOfFirstCutOffPart = calculateSectionalVolumeFromHeight(lonelyPoint, plane);
-                double volumeOfSecondCutOffPart = volumeOfTetrahedron - volumeOfFirstCutOffPart;
-                return volumeOfFirstCutOffPart / volumeOfSecondCutOffPart;
-            } catch (DataException e) {
-                e.printStackTrace();
-                return 0;
-            }
-        } else {
-            throw new TetrahedronIsNotRegularException("");
+    public double calculateSectionalVolumeRatio(Tetrahedron tetrahedron, Plane plane) {
+        try {
+            Point lonelyPoint = findLonelyPoint(tetrahedron, plane);
+            LOGGER.log(Level.DEBUG, "Search of point which is cut off by plane - success");
+            double volumeOfTetrahedron = calculateTetrahedronVolume(tetrahedron);
+            double volumeOfFirstCutOffPart = calculateSectionalVolumeFromHeight(lonelyPoint, plane);
+            double volumeOfSecondCutOffPart = volumeOfTetrahedron - volumeOfFirstCutOffPart;
+            return volumeOfFirstCutOffPart / volumeOfSecondCutOffPart;
+        } catch (CalculationException e) {
+            LOGGER.error(e.getMessage());
+            return 0;
         }
 
     }
@@ -154,50 +136,43 @@ public class TetrahedronCalculator {
         return (Math.pow(edgeLength, 3) * Math.sqrt(2)) / 12;
     }
 
-    private ArrayList<Double> fromTetrahedronToCoordinateList(Tetrahedron tetrahedron, Plane plane) {
+    private List<Double> fromTetrahedronToCoordinateList(Tetrahedron tetrahedron, Plane plane) {
         LOGGER.log(Level.INFO, "Start parsing coordinates from tetrahedron depends on secant plane");
         Point a = tetrahedron.getA();
         Point b = tetrahedron.getB();
         Point c = tetrahedron.getC();
         Point d = tetrahedron.getD();
-        ArrayList<Double> pointsCoordinates = new ArrayList<>();
         switch (plane) {
             case XOY:
-                double aZ = a.getZ();
-                double bZ = b.getZ();
-                double cZ = c.getZ();
-                double dZ = d.getZ();
-                pointsCoordinates.add(aZ);
-                pointsCoordinates.add(bZ);
-                pointsCoordinates.add(cZ);
-                pointsCoordinates.add(dZ);
-                break;
+                return Arrays.asList(a.getZ(), b.getZ(), c.getZ(), d.getZ());
             case XOZ:
-                double aY = a.getY();
-                double bY = b.getY();
-                double cY = c.getY();
-                double dY = d.getY();
-                pointsCoordinates.add(aY);
-                pointsCoordinates.add(bY);
-                pointsCoordinates.add(cY);
-                pointsCoordinates.add(dY);
-                break;
+                return Arrays.asList(a.getY(), b.getY(), c.getY(), d.getY());
             case YOZ:
-                double aX = a.getX();
-                double bX = b.getX();
-                double cX = c.getX();
-                double dX = d.getX();
-                pointsCoordinates.add(aX);
-                pointsCoordinates.add(bX);
-                pointsCoordinates.add(cX);
-                pointsCoordinates.add(dX);
-                break;
+                return Arrays.asList(a.getX(), b.getX(), c.getX(), d.getX());
+            default:
+                return new ArrayList<>();
         }
-        return pointsCoordinates;
     }
 
-    private double findLonelyPointCoordinate(ArrayList<Double> pointsCoordinates) throws DataException {
+    private double findLonelyPointCoordinate(List<Double> pointsCoordinates)
+            throws CalculationException {
         LOGGER.log(Level.INFO, "Start searching the coordinate of cut of point");
+        int locationCounter = findLonelyPointPlaneLocation(pointsCoordinates);
+        double coordinateOfLonelyPoint;
+        switch (locationCounter) {
+            case 1:
+                coordinateOfLonelyPoint = findMin(pointsCoordinates);
+                break;
+            case -1:
+                coordinateOfLonelyPoint = findMax(pointsCoordinates);
+                break;
+            default:
+                throw new CalculationException("Tetrahedron should not be inclined");
+        }
+        return coordinateOfLonelyPoint;
+    }
+
+    private int findLonelyPointPlaneLocation(List<Double> pointsCoordinates) {
         int counter = 0;
         for (Double coordinate : pointsCoordinates) {
             if (coordinate > 0) {
@@ -206,79 +181,75 @@ public class TetrahedronCalculator {
                 counter--;
             }
         }
-        double coordinateOfLonelyPoint = 0;
-        switch (counter) {
-            case 1:
-                for (Double coordinate : pointsCoordinates) {
-                    if (coordinate < 0) {
-                        coordinateOfLonelyPoint = coordinate;
-                        break;
-                    }
-                }
-                break;
-            case -1:
-                for (Double coordinate : pointsCoordinates) {
-                    if (coordinate > 0) {
-                        coordinateOfLonelyPoint = coordinate;
-                        break;
-                    }
-                }
-                break;
-            default:
-                throw new DataException("Tetrahedron should not be inclined");
-        }
-        return coordinateOfLonelyPoint;
+        return counter;
     }
 
     private Point fromCoordinateToPoint(Tetrahedron tetrahedron, Plane plane, double coordinate)
-            throws DataException {
+            throws CalculationException {
         LOGGER.log(Level.INFO, "Start parsing point from coordinates depends on secant plane");
-        Point a = tetrahedron.getA();
-        Point b = tetrahedron.getB();
-        Point c = tetrahedron.getC();
-        Point d = tetrahedron.getD();
-        List<Point> points = new ArrayList<>();
-        points.add(a);
-        points.add(b);
-        points.add(c);
-        points.add(d);
-
+        List<Point> points = Arrays.asList(tetrahedron.getA(), tetrahedron.getB(), tetrahedron.getC(), tetrahedron.getD());
         switch (plane) {
             case YOZ:
-                for (Point point : points) {
-                    if (Math.abs(point.getX() - coordinate) < THRESHOLD) {
-                        return point;
-                    }
-                }
-                break;
+                return fromCoordinateToPointYoz(points, coordinate);
             case XOZ:
-                for (Point point : points) {
-                    if (Math.abs(point.getY() - coordinate) < THRESHOLD) {
-                        return point;
-                    }
-                }
-                break;
+                return fromCoordinateToPointXoz(points, coordinate);
             case XOY:
-                for (Point point : points) {
-                    if (Math.abs(point.getZ() - coordinate) < THRESHOLD) {
-                        return point;
-                    }
-                }
-                break;
+                return fromCoordinateToPointXoy(points, coordinate);
         }
-
-        throw new DataException("Not dissected by this plane");
+        throw new CalculationException("Not dissected by asserted plane");
     }
 
-    private Point findLonelyPoint(Tetrahedron tetrahedron, Plane plane) throws DataException {
-        ArrayList<Double> coordinateList = fromTetrahedronToCoordinateList(tetrahedron, plane);
+    private Point fromCoordinateToPointYoz(List<Point> points, double coordinate) throws CalculationException {
+        for (Point point : points) {
+            if (Math.abs(point.getX() - coordinate) < THRESHOLD) {
+                return point;
+            }
+        }
+        throw new CalculationException("Not dissected by YOZ plane");
+    }
+
+    private Point fromCoordinateToPointXoz(List<Point> points, double coordinate) throws CalculationException {
+        for (Point point : points) {
+            if (Math.abs(point.getY() - coordinate) < THRESHOLD) {
+                return point;
+            }
+        }
+        throw new CalculationException("Not dissected by XOZ plane");
+    }
+
+    private Point fromCoordinateToPointXoy(List<Point> points, double coordinate) throws CalculationException {
+        for (Point point : points) {
+            if (Math.abs(point.getZ() - coordinate) < THRESHOLD) {
+                return point;
+            }
+        }
+        throw new CalculationException("Not dissected by XOY plane");
+    }
+
+    private Point findLonelyPoint(Tetrahedron tetrahedron, Plane plane) throws CalculationException {
+        List<Double> coordinateList = fromTetrahedronToCoordinateList(tetrahedron, plane);
         double coordinateOfLonelyPoint = findLonelyPointCoordinate(coordinateList);
         return fromCoordinateToPoint(tetrahedron, plane, coordinateOfLonelyPoint);
     }
 
+    private double findMin(List<Double> coordinates) {
+        double min = coordinates.get(0);
+        for (double coordinate : coordinates) {
+            if (coordinate < min) {
+                min = coordinate;
+            }
+        }
+        return min;
+    }
 
-    private boolean isRegular(Tetrahedron tetrahedron) {
-        return new RegularTetrahedronValidator(tetrahedron).validate();
+    private double findMax(List<Double> coordinates) {
+        double max = coordinates.get(0);
+        for (double coordinate : coordinates) {
+            if (coordinate > max) {
+                max = coordinate;
+            }
+        }
+        return max;
     }
 
 }

@@ -2,8 +2,6 @@ package com.epam.task.third.repo;
 
 import com.epam.task.third.entity.Tetrahedron;
 import com.epam.task.third.repo.specifications.TetrahedronSpecification;
-import com.epam.task.third.validation.RegularTetrahedronValidator;
-import com.epam.task.third.validation.TetrahedronIsNotRegularException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,15 +14,11 @@ public class TetrahedronRepositoryImplementation implements TetrahedronRepositor
     private int id = 0;
 
     @Override
-    public void addTetrahedron(Tetrahedron tetrahedron) throws TetrahedronIsNotRegularException {
-        if (isRegular(tetrahedron)) {
+    public void addTetrahedron(Tetrahedron tetrahedron){
             while (repoMap.containsKey(id)) {
                 id++;
             }
             repoMap.put(id, tetrahedron);
-        } else {
-            throw new TetrahedronIsNotRegularException("Not regular");
-        }
     }
 
     @Override
@@ -33,12 +27,8 @@ public class TetrahedronRepositoryImplementation implements TetrahedronRepositor
     }
 
     @Override
-    public void replaceTetrahedron(int id, Tetrahedron tetrahedron) throws TetrahedronIsNotRegularException {
-        if (isRegular(tetrahedron)) {
+    public void replaceTetrahedron(int id, Tetrahedron tetrahedron){
             repoMap.replace(id, tetrahedron);
-        } else {
-            throw new TetrahedronIsNotRegularException("Not regular");
-        }
     }
 
     @Override
@@ -52,11 +42,7 @@ public class TetrahedronRepositoryImplementation implements TetrahedronRepositor
         return specifiedList;
     }
 
-    private boolean isRegular(Tetrahedron tetrahedron) {
-        return new RegularTetrahedronValidator(tetrahedron).validate();
-    }
-
-    public Map<Integer, Tetrahedron> getRepoMap() {
-        return repoMap;
+    public Tetrahedron getTetrahedronById(int id) {
+        return repoMap.get(id);
     }
 }

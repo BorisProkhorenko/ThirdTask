@@ -1,8 +1,8 @@
 package com.epam.task.third.observers;
 
-import com.epam.task.third.entity.Tetrahedron;
+import com.epam.task.third.entity.TetrahedronObservable;
 
 public interface Observer {
 
-    void update(Tetrahedron tetrahedron);
+    void update(TetrahedronObservable tetrahedron);
 }

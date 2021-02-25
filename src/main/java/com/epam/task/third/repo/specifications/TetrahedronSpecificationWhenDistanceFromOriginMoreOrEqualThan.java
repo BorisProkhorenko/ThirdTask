@@ -5,13 +5,14 @@ import com.epam.task.third.entity.Tetrahedron;
 import com.epam.task.third.logic.TetrahedronCalculator;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class TetrahedronSpecificationWhenDistanceFromOriginMoreOrEqualThan implements TetrahedronSpecification {
 
 
     private double distance;
-    private static final TetrahedronCalculator CALCULATOR = new TetrahedronCalculator();
+    private final TetrahedronCalculator calculator = new TetrahedronCalculator();
     private static final double THRESHOLD = 0.0001;
     private static final Point ORIGIN = new Point(0, 0, 0);
 
@@ -21,17 +22,9 @@ public class TetrahedronSpecificationWhenDistanceFromOriginMoreOrEqualThan imple
 
     @Override
     public boolean specified(Tetrahedron tetrahedron) {
-        Point a = tetrahedron.getA();
-        Point b = tetrahedron.getB();
-        Point c = tetrahedron.getC();
-        Point d = tetrahedron.getD();
-        List<Point> points = new ArrayList<>();
-        points.add(a);
-        points.add(b);
-        points.add(c);
-        points.add(d);
+        List<Point> points = Arrays.asList(tetrahedron.getA(),tetrahedron.getB(),tetrahedron.getC(),tetrahedron.getD());
         for (Point point : points) {
-            if (CALCULATOR.calculateDistanceBetweenTwoPoints(point, ORIGIN) - THRESHOLD >= distance) {
+            if (calculator.calculateDistanceBetweenTwoPoints(point, ORIGIN) - THRESHOLD >= distance) {
                 return true;
             }
         }

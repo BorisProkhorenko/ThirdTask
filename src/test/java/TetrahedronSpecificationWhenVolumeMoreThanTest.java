@@ -1,6 +1,5 @@
 import com.epam.task.third.entity.Tetrahedron;
 import com.epam.task.third.repo.specifications.TetrahedronSpecificationWhenVolumeMoreThan;
-import com.epam.task.third.validation.TetrahedronIsNotRegularException;
 import org.junit.Assert;
 
 public class TetrahedronSpecificationWhenVolumeMoreThanTest extends TetrahedronSpecificationTest {

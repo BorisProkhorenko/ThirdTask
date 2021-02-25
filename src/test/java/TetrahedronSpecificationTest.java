@@ -1,7 +1,6 @@
 import com.epam.task.third.entity.Point;
 import com.epam.task.third.entity.Tetrahedron;
 import com.epam.task.third.logic.TetrahedronCalculator;
-import com.epam.task.third.validation.TetrahedronIsNotRegularException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -20,7 +19,7 @@ public abstract class TetrahedronSpecificationTest {
     }
 
     @Test
-    public abstract void testSpecifiedWhenTrue() throws TetrahedronIsNotRegularException;
+    public abstract void testSpecifiedWhenTrue();
 
     @Test
     public abstract void testSpecifiedWhenFalse();
